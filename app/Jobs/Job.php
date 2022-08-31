@@ -46,7 +46,7 @@ class Job implements ShouldQueue
             $this->args = array_merge($this->args, $args);
         }
         $this->tries = $this->args['tries'];
-        Redis::hMset(time(),[
+        Redis::hMset('params',[
             'params' => json_encode($this->args),
             'startDateTime' => date("Y-m-d H:i:s")
         ]);
