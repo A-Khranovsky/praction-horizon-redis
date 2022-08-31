@@ -9,13 +9,6 @@ use App\Models\Param;
 
 class QueueControllerService implements QueueControllerServiceInterface
 {
-    public function show($request)
-    {
-        if ($request->has('transaction')) {
-            return LogsResource::collection(Log::where('transaction', '=', $request->get('transaction'))->get());
-        }
-        return LogsResource::collection(Log::all());
-    }
 
     public function start($request)
     {
@@ -42,32 +35,5 @@ class QueueControllerService implements QueueControllerServiceInterface
         }
 
         return response('Started, transaction = ' . time() . $result ?? '', 200);
-    }
-
-    public function clear()
-    {
-        Param::where('id', '>', 0)->delete();
-        return response('Cleared', 200);
-    }
-
-    public function total()
-    {
-        $total = Log::all();
-        $transactions = $total->pluck('transaction')->unique();
-        $result = [];
-        $transactions->each(function ($item, $key) use (&$result, $total) {
-            $result[] = [
-                'transaction' => $item,
-                'guess number' => $total->whereIn('transaction', $item)->pluck('guessNumber')->first(),
-                'status' => $total->whereIn('transaction', $item)->pluck('status')->last(),
-                'used tries' => $total->whereIn('transaction', $item)->count(),
-                'params' => json_decode($total->where('transaction', '=', $item)->first()->param->params),
-                'start date' => $total->where('transaction', '=', $item)->first()->param->startDateTime,
-                'end date' => $total->where('transaction', '=', $item)->first()->param->endDateTime,
-                'completion time' => $total->where('transaction', '=', $item)->first()->param->completionTime,
-            ];
-        });
-
-        return $result;
     }
 }
