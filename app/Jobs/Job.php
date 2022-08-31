@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Redis;
 
 class Job implements ShouldQueue
 {
@@ -45,11 +46,11 @@ class Job implements ShouldQueue
             $this->args = array_merge($this->args, $args);
         }
         $this->tries = $this->args['tries'];
-        $param = Param::create([
+        Redis::hMset(time(),[
             'params' => json_encode($this->args),
             'startDateTime' => date("Y-m-d H:i:s")
         ]);
-        $this->idParam = $param->id;
+        $this->idParam = time();
         $this->transaction = time();
     }
 
@@ -73,7 +74,7 @@ class Job implements ShouldQueue
             ));
             $message = [
                 'message' => 'Failed. ' . $this->randNumber . ' is not ' . $this->args['guessNumber'],
-                'idParam' => $this->idParam
+                'idParam' => $this->transaction
             ];
             throw new Exception(json_encode($message, true));
         } else {

@@ -11,6 +11,7 @@ use App\Models\Log;
 use App\Traits\WriteTimeParams;
 use Exception;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Support\Facades\Redis;
 
 class EventsSubscriber
 {
@@ -23,24 +24,24 @@ class EventsSubscriber
 
     public function handleSuccessJob($event)
     {
-        Log::create([
+        Redis::hMset('success', [
             'transaction' => $event->transaction,
             'guessNumber' => $event->guessNumber,
             'randNumber' => $event->randNumber,
             'status' => 'OK',
             'param_id' => $event->paramId
         ]);
-        $this->writeTimeParams($event->paramId);
+        $this->writeTimeParams($event->transaction);
     }
 
     public function handleFailedJob($event)
     {
-        Log::create([
+        Redis::hMset('failed', [
             'transaction' => $event->transaction,
             'guessNumber' => $event->guessNumber,
             'randNumber' => $event->randNumber,
             'status' => 'Failed',
-            'param_id' => $event->paramId
+            'param_id' => $event->transaction
         ]);
     }
 

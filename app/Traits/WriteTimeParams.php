@@ -4,12 +4,13 @@ namespace App\Traits;
 
 use App\Models\Param;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 trait WriteTimeParams
 {
     public function writeTimeParams(int $idParam)
     {
-        $param = Param::find($idParam);
+        $param = Redis::hGetAll($idParam);
         $param->endDateTime = date("Y-m-d H:i:s");
         $param->save();
 
