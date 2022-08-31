@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Redis;
 
 class EventsSubscriber
 {
-    use WriteTimeParams;
 
     public function __construct()
     {
@@ -31,7 +30,6 @@ class EventsSubscriber
             'status' => 'OK',
             'param_id' => $event->paramId
         ]);
-        $this->writeTimeParams($event->transaction);
     }
 
     public function handleFailedJob($event)
@@ -50,7 +48,6 @@ class EventsSubscriber
     {
         try {
             $message = json_decode($event->exception->getMessage(), true);
-            $this->writeTimeParams($message['idParam']);
         } catch (Exception $exception) {
             throw new Exception($exception);
         }
@@ -72,14 +69,5 @@ class EventsSubscriber
             FailedExceptionEvent::class,
             [EventsSubscriber::class, 'handleFailedException']
         );
-
-
-
-//        return [
-//            SuccessJobEvent::class => 'handleSuccessJob',
-//            FailedJobEvent::class => 'handleFailedJob',
-//            WriteTimeParamsEvent::class => 'handleWriteTimeParams',
-//
-//        ];
     }
 }
