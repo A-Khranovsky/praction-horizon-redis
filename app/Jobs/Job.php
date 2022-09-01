@@ -50,6 +50,12 @@ class Job implements ShouldQueue
             'params' => json_encode($this->args),
             'startDateTime' => date("Y-m-d H:i:s")
         ]);
+        $params = '';
+        array_walk_recursive($this->args, function($value, $key) use (&$params) {
+            $params .= $key . ' = ' . $value . ' ';
+        });
+        Redis::rPush($this->transaction, 'Params: ' . $params);
+        Redis::rPush($this->transaction, 'Start date: ' . date("Y-m-d H:i:s"));
     }
 
     /**
@@ -68,7 +74,6 @@ class Job implements ShouldQueue
                 $this->randNumber,
                 $this->args['guessNumber'],
                 $this->transaction,
-                //$this->idParam
             ));
             $message = [
                 'message' => 'Failed. ' . $this->randNumber . ' is not ' . $this->args['guessNumber'],
@@ -80,7 +85,6 @@ class Job implements ShouldQueue
                 $this->randNumber,
                 $this->args['guessNumber'],
                 $this->transaction
-                //$this->idParam
             ));
         }
     }
