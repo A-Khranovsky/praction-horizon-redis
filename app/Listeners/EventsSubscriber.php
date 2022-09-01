@@ -23,16 +23,20 @@ class EventsSubscriber
 
     public function handleSuccessJob($event)
     {
-        Redis::rPush($event->transaction,
+        Redis::rPush(
+            $event->transaction,
             'guessNumber = ' . $event->guessNumber . '  randNumber = ' . $event->randNumber .
-            '  status = OK');
+            '  status = OK'
+        );
     }
 
     public function handleFailedJob($event)
     {
-        Redis::rPush($event->transaction,
+        Redis::rPush(
+            $event->transaction,
             'guessNumber = ' . $event->guessNumber . '  randNumber = ' . $event->randNumber .
-            '  status = Failed');
+            '  status = Failed'
+        );
     }
 
 

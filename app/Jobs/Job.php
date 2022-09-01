@@ -45,12 +45,12 @@ class Job implements ShouldQueue
         }
         $this->tries = $this->args['tries'];
         $this->transaction = time();
-        Redis::hMset($this->transaction . '_params',[
+        Redis::hMset($this->transaction . '_params', [
             'params' => json_encode($this->args),
             'startDateTime' => date("Y-m-d H:i:s")
         ]);
         $params = '';
-        array_walk_recursive($this->args, function($value, $key) use (&$params) {
+        array_walk_recursive($this->args, function ($value, $key) use (&$params) {
             $params .= $key . ' = ' . $value . ' ';
         });
         Redis::rPush($this->transaction, 'Params: ' . $params);
