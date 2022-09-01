@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Events\FailedExceptionEvent;
 use App\Events\FailedJobEvent;
 use App\Events\SuccessJobEvent;
-use App\Models\Param;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
