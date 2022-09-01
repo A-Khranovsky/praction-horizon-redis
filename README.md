@@ -1,3 +1,48 @@
+## Vocation 
+Praction with using redis in queue handling.
+
+## Description
+Handling the queue in redis enablade due to laravel/horizon package (Horizon). Horizone includes the supervisor
+to handle queue in redis.
+Project as default guess a number, generates randomly number and equals both. If they equal job will be complited.
+If they are not equal job will be failed. User can input his number and another params if he wish.
+Project stores logs in redis`s list, writes to tail.
+Project starts through GET request to API. 
+Project can starts with default settings with request:
+```angular2html
+GET http://localhost:80/api/start
+Accept: application/json
+
+###
+```
+Or with params (which may be different):
+```angular2html
+GET http://localhost:80/api/start?tries=100&backoff=0&guess_number=32&range[start]=0&range[end]=200
+Accept: application/json
+
+###
+```
+Logs are available in redis server. To watch them you will need to execute in container:
+```angular2html
+redis-cli
+```
+```angular2html
+keys *
+```
+```
+lrange key 0 -1
+```
+Horizon provides UI, wich accessible at http://localhost/horizon
+
+## How to run
+* clone the repository
+* ```docker-compose up -d```
+* ```docker exec -it queueinredis_app_1 bash```
+* ```service redis-server restart```
+* ```php artisan horizon```
+* Send GET request to http://localhost/api/start (You may use the browser`s address string)
+
+### Some output example: 
 ```angular2html
 127.0.0.1:6379> keys *
  1) "laravel_horizon:job:App\\Jobs\\Job"
