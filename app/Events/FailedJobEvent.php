@@ -15,17 +15,17 @@ class FailedJobEvent
     public int $randNumber;
     public int $guessNumber;
     public int $transaction;
-    public int $paramId;
+    //public int $paramId;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($randNumber, $guessNumber, $transaction, $paramId)
+    public function __construct($randNumber, $guessNumber, $transaction) //, $paramId)
     {
         $this->randNumber = $randNumber;
         $this->guessNumber = $guessNumber;
         $this->transaction = $transaction;
-        $this->paramId = $paramId;
+        //$this->paramId = $paramId;
     }
 }

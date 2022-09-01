@@ -32,7 +32,7 @@ class Job implements ShouldQueue
     ];
     protected int $transaction;
     protected int $randNumber;
-    protected int $idParam;
+    //protected int $idParam;
     public $tries = 100;
 
     /**
@@ -46,12 +46,12 @@ class Job implements ShouldQueue
             $this->args = array_merge($this->args, $args);
         }
         $this->tries = $this->args['tries'];
-        Redis::hMset('params',[
+        $this->transaction = time();
+        Redis::hMset($this->transaction . '_params',[
             'params' => json_encode($this->args),
             'startDateTime' => date("Y-m-d H:i:s")
         ]);
-        $this->idParam = time();
-        $this->transaction = time();
+        //$this->idParam = time();
     }
 
     /**
@@ -70,19 +70,19 @@ class Job implements ShouldQueue
                 $this->randNumber,
                 $this->args['guessNumber'],
                 $this->transaction,
-                $this->idParam
+                //$this->idParam
             ));
             $message = [
                 'message' => 'Failed. ' . $this->randNumber . ' is not ' . $this->args['guessNumber'],
-                'idParam' => $this->transaction
+                'transaction' => $this->transaction
             ];
             throw new Exception(json_encode($message, true));
         } else {
             event(new SuccessJobEvent(
                 $this->randNumber,
                 $this->args['guessNumber'],
-                $this->transaction,
-                $this->idParam
+                $this->transaction
+                //$this->idParam
             ));
         }
     }
