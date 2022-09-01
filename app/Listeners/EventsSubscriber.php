@@ -23,22 +23,16 @@ class EventsSubscriber
 
     public function handleSuccessJob($event)
     {
-        Redis::hMset($event->transaction . '_logs', [
-            'guessNumber' => $event->guessNumber,
-            'randNumber' => $event->randNumber,
-            'status' => 'OK',
-            //'param_id' => $event->paramId
-        ]);
+        Redis::rPush($event->transaction . '_logs',
+            'guessNumber = ' . $event->guessNumber . '  randNumber = ' . $event->randNumber .
+            '  status = OK');
     }
 
     public function handleFailedJob($event)
     {
-        Redis::hMset($event->transaction . '_logs', [
-            'guessNumber' => $event->guessNumber,
-            'randNumber' => $event->randNumber,
-            'status' => 'Failed',
-            //'param_id' => $event->transaction
-        ]);
+        Redis::rPush($event->transaction . '_logs',
+            'guessNumber = ' . $event->guessNumber . '  randNumber = ' . $event->randNumber .
+            '  status = Failed');
     }
 
 

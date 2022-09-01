@@ -32,7 +32,6 @@ class Job implements ShouldQueue
     ];
     protected int $transaction;
     protected int $randNumber;
-    //protected int $idParam;
     public $tries = 100;
 
     /**
@@ -51,7 +50,6 @@ class Job implements ShouldQueue
             'params' => json_encode($this->args),
             'startDateTime' => date("Y-m-d H:i:s")
         ]);
-        //$this->idParam = time();
     }
 
     /**
