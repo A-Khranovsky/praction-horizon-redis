@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/put/cache', [\App\Http\Controllers\MyCacheController::class, 'put']);
